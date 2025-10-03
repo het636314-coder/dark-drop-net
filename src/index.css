@@ -174,6 +174,23 @@ All colors MUST be HSL.
     }
   }
 
+  /* Comprehensive dialog positioning fix for mobile viewport issues */
+  
+  /* Ensure proper viewport handling */
+  html {
+    height: 100%;
+    overflow-x: hidden;
+  }
+  
+  body {
+    height: 100%;
+    overflow-x: hidden;
+    /* Prevent iOS Safari bounce scrolling */
+    overscroll-behavior: none;
+    /* Prevent zoom on double tap */
+    touch-action: manipulation;
+  }
+
   /* Fix dialog positioning issues - target all possible Radix UI dialog selectors */
   [data-state="open"][data-radix-dialog-content],
   [data-radix-dialog-content],
@@ -188,37 +205,73 @@ All colors MUST be HSL.
     margin: 0 !important;
     overflow-y: auto !important;
     pointer-events: auto !important;
+    z-index: 9999 !important;
     /* Prevent any sliding animations */
     transition: none !important;
     animation: none !important;
+    /* Prevent mobile browser repositioning */
+    will-change: auto !important;
+    backface-visibility: hidden !important;
+    /* Ensure stable positioning on mobile */
+    contain: layout style paint !important;
   }
 
-  /* Ensure dialog overlay covers full viewport */
+  /* Ensure dialog overlay covers full viewport and handles mobile properly */
   [data-state="open"][data-radix-dialog-overlay],
   [data-radix-dialog-overlay],
   [data-radix-alert-dialog-overlay] {
     position: fixed !important;
     inset: 0 !important;
-    z-index: 50 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9998 !important;
     pointer-events: auto !important;
+    /* Prevent mobile browser issues */
+    overscroll-behavior: none !important;
+    touch-action: none !important;
   }
 
-  /* Prevent body scroll when dialog is open */
+  /* Prevent body scroll when dialog is open - enhanced for mobile */
   body:has([data-radix-dialog-content]),
   body:has([data-radix-alert-dialog-content]) {
-    overflow: hidden;
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+    overscroll-behavior: none !important;
+    touch-action: none !important;
   }
 
   /* Additional fixes for Radix UI Dialog */
   [data-radix-popper-content-wrapper] {
     position: fixed !important;
-    z-index: 50 !important;
+    z-index: 9999 !important;
   }
 
-  /* Prevent dialog content from sliding - disable all animations */
+  /* Prevent dialog content from sliding - disable all animations and interactions */
   [data-radix-dialog-content] *,
   [data-radix-alert-dialog-content] * {
     pointer-events: auto !important;
+    /* Prevent text selection that might cause repositioning */
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+  }
+
+  /* Allow text selection for input fields */
+  [data-radix-dialog-content] input,
+  [data-radix-dialog-content] textarea,
+  [data-radix-alert-dialog-content] input,
+  [data-radix-alert-dialog-content] textarea {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
   }
 
   /* Override any Tailwind animations that might cause sliding */
@@ -228,17 +281,58 @@ All colors MUST be HSL.
   .data-\[state\=closed\]\:slide-out-to-top-\[48\%\] {
     animation: none !important;
     transform: translate(-50%, -50%) !important;
+    transition: none !important;
   }
 
-  /* Mobile-specific dialog fixes */
-  @media (max-width: 640px) {
+  /* Mobile-specific dialog fixes - comprehensive viewport handling */
+  @media (max-width: 768px) {
     [data-state="open"][data-radix-dialog-content],
     [data-radix-dialog-content],
     [data-radix-alert-dialog-content] {
       max-width: 95vw !important;
       max-height: 85vh !important;
+      min-height: auto !important;
       margin: 0 !important;
       border-radius: 0.75rem !important;
+      /* Prevent mobile browser zoom/repositioning */
+      transform: translate(-50%, -50%) scale(1) !important;
+      transform-origin: center center !important;
+      /* Ensure stable positioning */
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
     }
+    
+    /* Mobile overlay adjustments */
+    [data-state="open"][data-radix-dialog-overlay],
+    [data-radix-dialog-overlay],
+    [data-radix-alert-dialog-overlay] {
+      /* Handle mobile viewport units properly */
+      height: 100dvh !important;
+      min-height: 100vh !important;
+    }
+  }
+
+  /* iOS Safari specific fixes */
+  @supports (-webkit-touch-callout: none) {
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content] {
+      /* Prevent iOS Safari repositioning */
+      -webkit-transform: translate(-50%, -50%) !important;
+      -webkit-backface-visibility: hidden !important;
+    }
+    
+    [data-radix-dialog-overlay],
+    [data-radix-alert-dialog-overlay] {
+      /* Fix iOS Safari viewport issues */
+      height: -webkit-fill-available !important;
+    }
+  }
+
+  /* Prevent touch events from causing repositioning */
+  [data-radix-dialog-content],
+  [data-radix-alert-dialog-content] {
+    -webkit-tap-highlight-color: transparent !important;
+    tap-highlight-color: transparent !important;
   }
 }

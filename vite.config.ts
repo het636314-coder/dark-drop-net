@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "0.0.0.0",
     port: 12000,
-    allowedHosts: "all",
+    allowedHosts: ["work-1-bdbidltyljalkpmw.prod-runtime.all-hands.dev", "work-2-bdbidltyljalkpmw.prod-runtime.all-hands.dev", "localhost", "127.0.0.1"],
     strictPort: false,
     cors: true,
     headers: {
