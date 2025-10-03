@@ -191,7 +191,7 @@ All colors MUST be HSL.
     touch-action: manipulation;
   }
 
-  /* Fix dialog positioning issues - target all possible Radix UI dialog selectors */
+  /* LOCK DIALOG BOX IN CENTER - PREVENT ALL SLIDING/MOVEMENT */
   [data-state="open"][data-radix-dialog-content],
   [data-radix-dialog-content],
   [data-radix-alert-dialog-content] {
@@ -206,12 +206,57 @@ All colors MUST be HSL.
     overflow-y: auto !important;
     pointer-events: auto !important;
     z-index: 9999 !important;
-    /* Prevent any sliding animations */
+    
+    /* COMPLETELY PREVENT ANY SLIDING/MOVEMENT */
     transition: none !important;
     animation: none !important;
-    /* Prevent mobile browser repositioning */
+    -webkit-transition: none !important;
+    -webkit-animation: none !important;
+    
+    /* LOCK POSITION ON ALL INTERACTIONS */
+    touch-action: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-drag: none !important;
+    -khtml-user-drag: none !important;
+    -moz-user-drag: none !important;
+    -o-user-drag: none !important;
+    user-drag: none !important;
+    
+    /* PREVENT BROWSER REPOSITIONING */
+    contain: layout style paint !important;
     will-change: auto !important;
+    -webkit-transform: translate(-50%, -50%) !important;
+    -webkit-backface-visibility: hidden !important;
     backface-visibility: hidden !important;
+  }
+
+  /* FORCE CENTER POSITION ON ALL STATES AND INTERACTIONS */
+  [data-radix-dialog-content]:hover,
+  [data-radix-dialog-content]:focus,
+  [data-radix-dialog-content]:active,
+  [data-radix-dialog-content]:focus-within,
+  [data-radix-dialog-content]:target,
+  [data-radix-alert-dialog-content]:hover,
+  [data-radix-alert-dialog-content]:focus,
+  [data-radix-alert-dialog-content]:active,
+  [data-radix-alert-dialog-content]:focus-within,
+  [data-radix-alert-dialog-content]:target {
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    -webkit-transform: translate(-50%, -50%) !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* PREVENT ANY PSEUDO-ELEMENTS FROM CAUSING MOVEMENT */
+  [data-radix-dialog-content]:before,
+  [data-radix-dialog-content]:after,
+  [data-radix-alert-dialog-content]:before,
+  [data-radix-alert-dialog-content]:after {
+    content: none !important;
+    display: none !important;
     /* Ensure stable positioning on mobile */
     contain: layout style paint !important;
   }
