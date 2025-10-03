@@ -174,8 +174,10 @@ All colors MUST be HSL.
     }
   }
 
-  /* Fix dialog positioning issues on mobile and desktop */
-  [data-radix-dialog-content] {
+  /* Fix dialog positioning issues - target all possible Radix UI dialog selectors */
+  [data-state="open"][data-radix-dialog-content],
+  [data-radix-dialog-content],
+  [data-radix-alert-dialog-content] {
     position: fixed !important;
     top: 50% !important;
     left: 50% !important;
@@ -185,23 +187,54 @@ All colors MUST be HSL.
     width: 100% !important;
     margin: 0 !important;
     overflow-y: auto !important;
+    pointer-events: auto !important;
+    /* Prevent any sliding animations */
+    transition: none !important;
+    animation: none !important;
   }
 
   /* Ensure dialog overlay covers full viewport */
-  [data-radix-dialog-overlay] {
+  [data-state="open"][data-radix-dialog-overlay],
+  [data-radix-dialog-overlay],
+  [data-radix-alert-dialog-overlay] {
     position: fixed !important;
     inset: 0 !important;
     z-index: 50 !important;
+    pointer-events: auto !important;
   }
 
   /* Prevent body scroll when dialog is open */
-  body:has([data-radix-dialog-content]) {
+  body:has([data-radix-dialog-content]),
+  body:has([data-radix-alert-dialog-content]) {
     overflow: hidden;
+  }
+
+  /* Additional fixes for Radix UI Dialog */
+  [data-radix-popper-content-wrapper] {
+    position: fixed !important;
+    z-index: 50 !important;
+  }
+
+  /* Prevent dialog content from sliding - disable all animations */
+  [data-radix-dialog-content] *,
+  [data-radix-alert-dialog-content] * {
+    pointer-events: auto !important;
+  }
+
+  /* Override any Tailwind animations that might cause sliding */
+  .data-\[state\=open\]\:slide-in-from-left-1\/2,
+  .data-\[state\=open\]\:slide-in-from-top-\[48\%\],
+  .data-\[state\=closed\]\:slide-out-to-left-1\/2,
+  .data-\[state\=closed\]\:slide-out-to-top-\[48\%\] {
+    animation: none !important;
+    transform: translate(-50%, -50%) !important;
   }
 
   /* Mobile-specific dialog fixes */
   @media (max-width: 640px) {
-    [data-radix-dialog-content] {
+    [data-state="open"][data-radix-dialog-content],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content] {
       max-width: 95vw !important;
       max-height: 85vh !important;
       margin: 0 !important;
